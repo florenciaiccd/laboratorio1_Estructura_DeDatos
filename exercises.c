@@ -42,7 +42,14 @@ Al finalizar retorna la lista creada.
 */
 
 List* crea_lista() {
-   List* L = create_list();
+   List* L = create_list(); 
+   for(int i = 0; i < 11; i++){
+      int* elemento = malloc(sizeof(int));
+      *elemento = i;
+
+      pushFront(L, elemento);
+   }
+      
    return L;
 }
 
@@ -52,7 +59,13 @@ Crea una función que reciba una lista de enteros (int*) y
 retorne la suma de sus elementos.
 */
 int sumaLista(List *L) {
-   return 0;
+   void* elemento = first(L);
+   int suma = 0;
+   while(elemento!= NULL){
+      suma += *((int*)elemento);
+      elemento = next(L);
+   }
+   return suma;
 }
 
 /*
@@ -64,8 +77,17 @@ Asume que popCurrent luego de eliminar un elemento se
 posiciona en el elemento anterior.
 */
 
-void eliminaElementos(List*L, int elem){
-
+void eliminaElementos(List *L, int elem){
+   void* elemento = first(L);
+   while(elemento != NULL){
+      if( *((int*)elemento) == elem){
+         popCurrent(L);
+         elemento = first(L);
+      }
+      else{
+         elemento = next(L);      
+      }
+   }
 }
 
 /*
@@ -76,6 +98,16 @@ Puedes usar una pila auxiliar.
 */
 
 void copia_pila(Stack* P1, Stack* P2) {
+   Stack* aux = create_stack();
+   while(top(P1) != NULL){
+      push(aux, top(P1));
+      pop(P1);
+   }
+   while(top(aux) != NULL){
+      push(P2, top(aux));
+      push(P1, top(aux));
+      pop(aux);
+   }
 }
 
 /*
@@ -86,6 +118,29 @@ paraéntesis balanceados. Retorna 1 si están balanceados,
 */
 
 int parentesisBalanceados(char *cadena) {
-   return 0;
+   Stack * aux = create_stack();
+   
+   for(int i = 0; cadena[i] != '\0'; i++){
+      if(cadena[i] == '[' || cadena[i] == '{' || cadena[i] == '('){
+         push(aux, &cadena[i]);
+      }
+
+      else if(cadena[i] == ']' || cadena[i] == '}' || cadena[i] == ')'){
+         if(top(aux) == NULL){
+            return 0;
+         }
+
+         char* ultimo = top(aux);
+
+         if( (cadena[i] == ']' && *ultimo != '[') || (cadena[i] == '}' && *ultimo != '{')|| (cadena[i] == ')' && *ultimo != '(') ){
+            return 0;
+         }
+
+         else{
+            pop(aux);
+         }
+      }
+   }
+   return (top(aux)== NULL);
 }
 
